@@ -4,9 +4,9 @@ import { string } from "joi";
 const prisma = new PrismaClient();
 
 async function createTicketTypes() {
-  await createTicketType(true, true, "Presencial + Com Hotel");
-  await createTicketType(true, false, "Presencial + Sem Hotel");
-  await createTicketType(false, false, "Online");
+  await createTicketType(false, true, "Presencial + Com Hotel");
+  await createTicketType(false, false, "Presencial + Sem Hotel");
+  await createTicketType(true, false, "Online");
 }
 
 async function createTicketType(isRemote: boolean, includesHotel: boolean, name: string) {
@@ -22,7 +22,7 @@ async function createTicketType(isRemote: boolean, includesHotel: boolean, name:
 
 function calculatePrice(isRemote:boolean, includesHotel:boolean) {
  
-  if (isRemote) {
+  if (isRemote === false) {
     if (includesHotel) {
       return 600; // Preço para ingresso presencial com hotel
     } else {
