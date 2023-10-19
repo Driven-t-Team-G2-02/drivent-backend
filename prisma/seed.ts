@@ -33,25 +33,25 @@ function calculatePrice(isRemote:boolean, includesHotel:boolean) {
   }
 }
 
-function createActivities(tx: Prisma.TransactionClient) {
+async function createActivities(tx: Prisma.TransactionClient, eventId: number) {
   const room1 = await tx.eventRoom.create({
     data: {
       name: "Auditório Principal",
-      eventId: event.id,
+      eventId: eventId,
     }
   });
 
   const room2 = await tx.eventRoom.create({
     data: {
       name: "Auditório Lateral",
-      eventId: event.id,
+      eventId: eventId,
     }
   });
 
   const room3 = await tx.eventRoom.create({
     data: {
       name: "Sala de Workshop",
-      eventId: event.id,
+      eventId: eventId,
     }
   });
 
@@ -188,7 +188,7 @@ async function main() {
     const room = await tx.room.findFirst();
 
     if (!room) {
-      createActivities(tx);
+      await createActivities(tx, event.id);
     }
 
     return event;
