@@ -4,6 +4,16 @@ import { AuthenticatedRequest } from '@/middlewares';
 import { activitiesService } from '@/services';
 
 export async function getActivities(req: AuthenticatedRequest, res: Response) {
-  const activities = await activitiesService.getActivities();
+  const { userId } = req;
+  const activities = await activitiesService.getActivities(userId);
+
   res.status(httpStatus.OK).send(activities);
+}
+
+export async function signUpUserToActivity(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { activityId } = req.body;
+  const activity = await activitiesService.signUpUserToActivity(userId, activityId);
+
+  res.status(httpStatus.OK).send(activity);
 }
