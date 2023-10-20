@@ -8,7 +8,8 @@
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "tsc -p tsconfig.build.json && tsc-alias && npm run migration:run",
+    "build": "tsc -p tsconfig.build.json && tsc-alias && npm run migration:run && npm run seed",
+    "seed": "prisma db seed",
     "prepare": "husky install",
     "start": "node dist/server.js",
     "migration:run": "prisma migrate deploy",
