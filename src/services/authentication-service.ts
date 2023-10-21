@@ -5,6 +5,7 @@ import { invalidCredentialsError } from '@/errors';
 import { authenticationRepository, userRepository } from '@/repositories';
 import { exclude } from '@/utils/prisma-utils';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 async function signIn(params: SignInParams): Promise<SignInResult> {
   const { email, password } = params;
@@ -43,6 +44,18 @@ async function validatePasswordOrFail(password: string, userPassword: string) {
   if (!isPasswordValid) throw invalidCredentialsError();
 }
 
+async function findOrCreateUser(email: string) {
+  const userExists = await userRepository.findByEmail(email, { id: true, email: true, password: true });
+  if (!userExists) {
+    const newUser = await userRepository.create({
+      email: email,
+      password: bcrypt.hashSync(dayjs().toISOString(), 10),
+    });
+    return newUser;
+  }
+  return userExists;
+}
+
 async function signInGithub(code: string): Promise<SignInResult> {
   const response = await axios.post(`https://github.com/login/oauth/access_token`, {
     client_id: process.env.GITHUB_CLIENT_ID,
@@ -50,21 +63,14 @@ async function signInGithub(code: string): Promise<SignInResult> {
     code
   });
 
-  const tokenGithub = response.data.access_token;
+  const tokenGithub = (response.data).split('&')[0].split('=')[1];
   const userResponse = await axios.get('https://api.github.com/user', {
     headers: {
       Authorization: `Bearer ${tokenGithub}`
     }
   });
   
-  console.log(userResponse)
-  // upsert do usuário no banco
-  const user = {
-    id: 1,
-    email: 'teste@teste.com',
-    password: 'teste',
-    token: tokenGithub
-  }
+  const user = await findOrCreateUser(userResponse.data.email);
   const token = await createSession(user.id);
 
   return {
