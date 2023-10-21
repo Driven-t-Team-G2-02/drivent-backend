@@ -59,7 +59,6 @@ async function findActivityById(activityId: number) {
   })
 }
 
-
 export const activitiesRepository = {
   findActivities,
   signUpUserToActivity,
