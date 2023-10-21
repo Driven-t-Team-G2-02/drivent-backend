@@ -1,6 +1,6 @@
 import { activitiesRepository } from '@/repositories';
 
-export async function getActivities(){
+export async function getActivities() {
   return await activitiesRepository.findActivities();
 }
 
