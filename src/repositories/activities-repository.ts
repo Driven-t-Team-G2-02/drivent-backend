@@ -19,8 +19,8 @@ async function findActivities() {
           name: true
         }
       }
-
-    }
+    },
+    orderBy:{id:'asc'}
   })
 }
 
