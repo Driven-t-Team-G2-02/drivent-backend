@@ -105,19 +105,19 @@ async function getHotelsWithRooms(userId: number, hotelId: number) {
   if (!hotelWithRooms) throw notFoundError();
 
   // FIXME: remover quando ajustado
-  hotelWithRooms.Rooms.map(room => {
-    const needToFill = room.capacity - room.Booking.length;
+  // hotelWithRooms.Rooms.map(room => {
+  //   const needToFill = room.capacity - room.Booking.length;
 
-    // TODO: incluir capacidade disponível do quarto p/ saber qnd indisponivel
-    // room.capacityAvailable = needToFill; 
+  //   // TODO: incluir capacidade disponível do quarto p/ saber qnd indisponivel
+  //   // room.capacityAvailable = needToFill; 
 
-    // insere no array Booking de cada quarto dados mockados p/ diferenciar vagas na renderização do front 
-    for (let i = 0; i < needToFill; i++) {
-      room.Booking.unshift({id: 0, userId: 0});
-    }
+  //   // insere no array Booking de cada quarto dados mockados p/ diferenciar vagas na renderização do front 
+  //   for (let i = 0; i < needToFill; i++) {
+  //     room.Booking.unshift({id: 0, userId: 0});
+  //   }
 
-    return room;
-  })
+  //   return room;
+  // })
 
   return hotelWithRooms;
 }
