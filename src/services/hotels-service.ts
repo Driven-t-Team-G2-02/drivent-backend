@@ -9,6 +9,8 @@ import {
   ticketsRepository,
 } from '@/repositories';
 import { HotelWithDetails } from '@/protocols';
+import redis, { DEFAULT_EXP } from '@/config/redis';
+import redisUtils from '@/utils/redis-utils';
 
 async function validateUserBooking(userId: number) {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
@@ -66,26 +68,30 @@ async function accomodationsTypeHelper(hotelId: number) {
 async function getHotels(userId: number) {
   await validateUserBooking(userId);
 
+  const cacheKey = 'hotels';
+  const cachedHotels = await redisUtils.getCacheKey(cacheKey);
+
+  if(cachedHotels) return cachedHotels;
+  
   const hotels = await hotelRepository.findHotels();
   if (hotels.length === 0) throw notFoundError();
-
+  
   const hotelsWithDetails: HotelWithDetails[] = [];
-
+  
   for (let i = 0; i < hotels.length; i++) {
     const accommodations = await accomodationsTypeHelper(hotels[i].id);
-    console.log(accommodations);
-
+    
     const {
       _sum: { capacity },
     } = await roomRepository.findHotelHotelTotalCapacity(hotels[i].id);
-
+    
     const rooms = await roomRepository.findAllByHotelId(hotels[i].id);
     const hotelRoomsId = rooms.map((room) => room.id);
-
+    
     const bookings = await bookingRepository.findByRoomId(hotelRoomsId);
-
+    
     const capacityAvailable = capacity - bookings.length;
-
+    
     hotelsWithDetails.push({
       ...hotels[i],
       accommodations,
@@ -93,16 +99,25 @@ async function getHotels(userId: number) {
     });
   }
 
+  await redisUtils.setCacheKey(cacheKey, hotelsWithDetails);
+  
   return hotelsWithDetails;
 }
 
 async function getHotelsWithRooms(userId: number, hotelId: number) {
   await validateUserBooking(userId);
 
+  const cacheKey = `hotel${hotelId}`;
+  const cachedHotel = await redisUtils.getCacheKey(cacheKey);
+
+  if(cachedHotel) return cachedHotel;
+
   if (!hotelId || isNaN(hotelId)) throw invalidDataError('hotelId');
 
   const hotelWithRooms = await hotelRepository.findRoomsByHotelId(hotelId);
   if (!hotelWithRooms) throw notFoundError();
+
+  await redisUtils.setCacheKey(cacheKey, hotelWithRooms);
 
   return hotelWithRooms;
 }

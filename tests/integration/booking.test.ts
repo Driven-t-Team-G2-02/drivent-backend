@@ -15,6 +15,7 @@ import {
 } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
 import app, { init } from '@/app';
+import redis from '@/config/redis';
 
 beforeAll(async () => {
   await init();
@@ -22,6 +23,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await cleanDb();
+  await redis.flushAll();
 });
 
 const server = supertest(app);
