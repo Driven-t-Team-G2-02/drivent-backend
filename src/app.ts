@@ -14,7 +14,7 @@ import {
   bookingRouter,
   activitiesRouter,
 } from '@/routers';
-import { loadEnv, connectDb, disconnectDB } from '@/config';
+import { loadEnv, connectDb, disconnectDB, disconnectRedis, connectRedis } from '@/config';
 
 loadEnv();
 
@@ -36,11 +36,13 @@ app
 
 export function init(): Promise<Express> {
   connectDb();
+  connectRedis();
   return Promise.resolve(app);
 }
 
 export async function close(): Promise<void> {
   await disconnectDB();
+  await disconnectRedis();
 }
 
 export default app;

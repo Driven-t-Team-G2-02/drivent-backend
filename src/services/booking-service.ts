@@ -1,6 +1,8 @@
 import { TicketStatus } from '@prisma/client';
 import { cannotBookError, notFoundError } from '@/errors';
-import { bookingRepository, enrollmentRepository, roomRepository, ticketsRepository } from '@/repositories';
+import { bookingRepository, enrollmentRepository, hotelRepository, roomRepository, ticketsRepository } from '@/repositories';
+import redis from '@/config/redis';
+import redisUtils from '@/utils/redis-utils';
 
 async function validateUserBooking(userId: number) {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
@@ -35,7 +37,12 @@ async function bookRoomById(userId: number, roomId: number) {
   await validateUserBooking(userId);
   await checkValidBooking(roomId);
 
-  return bookingRepository.create({ roomId, userId });
+  const createdBooking = await bookingRepository.create({ roomId, userId });
+
+  const room = await roomRepository.findById(roomId);
+  await redisUtils.resetHotels(room.Hotel.id);
+
+  return createdBooking;
 }
 
 async function changeBookingRoomById(userId: number, roomId: number) {
@@ -45,6 +52,8 @@ async function changeBookingRoomById(userId: number, roomId: number) {
   const booking = await bookingRepository.findByUserId(userId);
 
   if (!booking || booking.userId !== userId) throw cannotBookError();
+
+  // TODO: reset Redis cache keys hotels and hotel that includes the room
 
   return bookingRepository.upsertBooking({
     id: booking.id,

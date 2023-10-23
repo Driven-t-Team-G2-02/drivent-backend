@@ -3,16 +3,18 @@ import httpStatus from 'http-status';
 import faker from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
 import { TicketStatus } from '@prisma/client';
-import { createEnrollmentWithAddress, createPayment, createTicket, createTicketType, createUser } from '../factories';
+import { createBooking, createEnrollmentWithAddress, createPayment, createTicket, createTicketType, createUser } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
 import { createHotel, createRoomWithHotelId } from '../factories/hotels-factory';
 import app, { init } from '@/app';
+import redis from '@/config/redis';
 
 beforeAll(async () => {
   await init();
 });
 
 beforeEach(async () => {
+  await redis.flushAll();
   await cleanDb();
 });
 
@@ -253,6 +255,7 @@ describe('GET /hotels/:hotelId', () => {
       const createdHotel = await createHotel();
 
       const createdRoom = await createRoomWithHotelId(createdHotel.id);
+      const createdBooking = await createBooking({roomId: createdRoom.id, userId: user.id})
 
       const response = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
 
@@ -272,6 +275,12 @@ describe('GET /hotels/:hotelId', () => {
             hotelId: createdHotel.id,
             createdAt: createdRoom.createdAt.toISOString(),
             updatedAt: createdRoom.updatedAt.toISOString(),
+            Booking: [
+              {
+                id: createdBooking.id,
+                userId: user.id,
+              },
+            ]
           },
         ],
       });
