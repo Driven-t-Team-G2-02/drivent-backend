@@ -5,8 +5,6 @@ import { signInSchema } from '@/schemas';
 
 const authenticationRouter = Router();
 
-authenticationRouter
-    .post('/sign-in', validateBody(signInSchema), singInPost)
-    .post('/github/sign-in', singInPostGithub)
+authenticationRouter.post('/sign-in', validateBody(signInSchema), singInPost).post('/github/sign-in', singInPostGithub);
 
 export { authenticationRouter };

@@ -4,9 +4,6 @@ import { getActivities, signUpUserToActivity } from '@/controllers';
 
 const activitiesRouter = Router();
 
-activitiesRouter
-    .all('/*', authenticateToken)
-    .get('/', getActivities)
-    .post('/', signUpUserToActivity)
+activitiesRouter.all('/*', authenticateToken).get('/', getActivities).post('/', signUpUserToActivity);
 
 export { activitiesRouter };

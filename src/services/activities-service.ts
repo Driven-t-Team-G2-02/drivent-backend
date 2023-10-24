@@ -1,8 +1,7 @@
-import { activitiesRepository } from '@/repositories';
 import { TicketStatus } from '@prisma/client';
-import { cannotActivityError, notFoundError } from '@/errors';
-import { enrollmentRepository, ticketsRepository } from '@/repositories';
 import dayjs from 'dayjs';
+import { activitiesRepository, enrollmentRepository, ticketsRepository } from '@/repositories';
+import { cannotActivityError, notFoundError } from '@/errors';
 
 async function validateUserToActivity(userId: number) {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
@@ -20,15 +19,19 @@ async function validateUserToActivity(userId: number) {
 
 async function validateUserActivitiesConfrontation(userId: number, activityId: number) {
   const activities = await activitiesRepository.findActivitiesByUserId(userId);
-  if (!activities) return
+  if (!activities) return;
 
   const activityToSignUp = await activitiesRepository.findActivityById(activityId);
 
-  const activityConfrontation = activities.some(activity => (activityToSignUp.startsAt >= activity.startsAt && activityToSignUp.startsAt <= activity.endsAt) || (activityToSignUp.endsAt >= activity.startsAt && activityToSignUp.endsAt <= activity.endsAt));
+  const activityConfrontation = activities.some(
+    (activity) =>
+      (activityToSignUp.startsAt >= activity.startsAt && activityToSignUp.startsAt <= activity.endsAt) ||
+      (activityToSignUp.endsAt >= activity.startsAt && activityToSignUp.endsAt <= activity.endsAt),
+  );
   if (activityConfrontation) throw cannotActivityError();
 }
 
-async function getActivities(userId: number){
+async function getActivities(userId: number) {
   await validateUserToActivity(userId);
 
   return await activitiesRepository.findActivities();
@@ -44,5 +47,4 @@ async function signUpUserToActivity(userId: number, activityId: number) {
 export const activitiesService = {
   getActivities,
   signUpUserToActivity,
-
 };

@@ -10,33 +10,33 @@ async function findActivities() {
       endsAt: true,
       User: {
         select: {
-          id: true
-        }
+          id: true,
+        },
       },
       EventRoom: {
         select: {
           id: true,
-          name: true
-        }
-      }
+          name: true,
+        },
+      },
     },
-    orderBy:{id:'asc'}
-  })
+    orderBy: { id: 'asc' },
+  });
 }
 
 async function signUpUserToActivity(userId: number, activityId: number) {
   return await prisma.activity.update({
     where: {
-      id: activityId
+      id: activityId,
     },
     data: {
       User: {
         connect: {
-          id: userId
-        }
-      }
-    }
-  })
+          id: userId,
+        },
+      },
+    },
+  });
 }
 
 async function findActivitiesByUserId(userId: number) {
@@ -44,19 +44,19 @@ async function findActivitiesByUserId(userId: number) {
     where: {
       User: {
         some: {
-          id: userId
-        }
-      }
-    }
-  })
+          id: userId,
+        },
+      },
+    },
+  });
 }
 
 async function findActivityById(activityId: number) {
   return await prisma.activity.findUnique({
     where: {
-      id: activityId
-    }
-  })
+      id: activityId,
+    },
+  });
 }
 
 export const activitiesRepository = {
@@ -64,5 +64,4 @@ export const activitiesRepository = {
   signUpUserToActivity,
   findActivitiesByUserId,
   findActivityById,
-
 };
