@@ -7,7 +7,7 @@ import redis from '@/config/redis';
 
 beforeAll(async () => {
   await init();
-  await cleanDb();
+  await cleanDb()
 });
 
 beforeEach(async () => {
