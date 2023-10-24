@@ -33,7 +33,7 @@ async function paymentProcess(ticketId: number, userId: number, cardData: CardPa
     cardLastDigits: cardData.number.toString().slice(-4),
   };
 
-  const payment = await prisma.$transaction( async (tx) => {
+  const payment = await prisma.$transaction(async (tx) => {
     const payment = await paymentsRepository.createPayment(ticketId, paymentData, tx);
     await ticketsRepository.ticketProcessPayment(ticketId, tx);
 
