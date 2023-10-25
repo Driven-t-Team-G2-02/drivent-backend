@@ -37,6 +37,12 @@ async function getActivities(userId: number) {
   return await activitiesRepository.findActivities();
 }
 
+async function getActivitiesByUser(userId: number) {
+
+  return await activitiesRepository.findActivitiesByUserId(userId);
+
+}
+
 async function signUpUserToActivity(userId: number, activityId: number) {
   await validateUserToActivity(userId);
   await validateUserActivitiesConfrontation(userId, activityId);
@@ -47,4 +53,5 @@ async function signUpUserToActivity(userId: number, activityId: number) {
 export const activitiesService = {
   getActivities,
   signUpUserToActivity,
+  getActivitiesByUser
 };
