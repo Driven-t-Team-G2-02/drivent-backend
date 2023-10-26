@@ -1,5 +1,5 @@
 import { TicketStatus } from '@prisma/client';
-import { cannotBookError, notFoundError } from '@/errors';
+import { cannotBookError, conflictError, notFoundError } from '@/errors';
 import { bookingRepository, enrollmentRepository, hotelRepository, roomRepository, ticketsRepository } from '@/repositories';
 import redis from '@/config/redis';
 import redisUtils from '@/utils/redis-utils';
@@ -16,6 +16,9 @@ async function validateUserBooking(userId: number) {
   if (ticket.status === TicketStatus.RESERVED || type.isRemote || !type.includesHotel) {
     throw cannotBookError();
   }
+
+  const userBooking = await bookingRepository.findByUserId(userId);
+  if(userBooking) throw conflictError('Booking')
 }
 
 async function checkValidBooking(roomId: number) {
