@@ -25,8 +25,8 @@ async function validateUserActivitiesConfrontation(userId: number, activityId: n
 
   const activityConfrontation = activities.some(
     (activity) =>
-      (activityToSignUp.startsAt >= activity.startsAt && activityToSignUp.startsAt <= activity.endsAt) ||
-      (activityToSignUp.endsAt >= activity.startsAt && activityToSignUp.endsAt <= activity.endsAt),
+      (activityToSignUp.startsAt >= activity.startsAt && activityToSignUp.startsAt < activity.endsAt) ||
+      (activityToSignUp.endsAt > activity.startsAt && activityToSignUp.endsAt <= activity.endsAt),
   );
   if (activityConfrontation) throw cannotActivityError();
 }
