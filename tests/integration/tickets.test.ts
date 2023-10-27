@@ -7,6 +7,7 @@ import { createEnrollmentWithAddress, createUser, createTicketType, createTicket
 import { cleanDb, generateValidToken } from '../helpers';
 import { prisma } from '@/config';
 import app, { init } from '@/app';
+import redis from '@/config/redis';
 
 beforeAll(async () => {
   await init();
@@ -14,6 +15,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await cleanDb();
+});
+
+afterAll(async () => {
+  await redis.flushAll();
 });
 
 const server = supertest(app);

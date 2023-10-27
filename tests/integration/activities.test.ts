@@ -20,6 +20,10 @@ afterEach(async () => {
     await redis.flushAll();
 });
 
+afterAll(async () => {
+    await redis.flushAll();
+});
+
 const server = supertest(app)
 
 describe('GET /activities', () => {
