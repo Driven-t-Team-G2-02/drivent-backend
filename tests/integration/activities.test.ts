@@ -21,6 +21,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
+    await cleanDb();
     await redis.flushAll();
 });
 
@@ -232,6 +233,65 @@ describe('POST /activities', () => {
                 createdAt: expect.any(String),
                 updatedAt: expect.any(String)
             }))
+        })
+    })
+})
+
+describe('GET /activities/activities', () => {
+    it('should respond with status 401 if no token is given', async () => {
+        const response = await server.get('/activities/activities');
+
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it('should respond with status 401 if given token is not valid', async () => {
+        const token = faker.lorem.word();
+
+        const response = await server.get('/activities/activities').set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it('should respond with status 401 if there is no session for given token', async () => {
+        const userWithoutSession = await createUser()
+        const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
+
+        const response = await server.get('/activities/activities').set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+    describe('when token is valid', () => {
+        it("should return status 200 and empty array when user doesn't have any activities yet", async () => {
+            const user = await createUser()
+            const token = await generateValidToken(user)
+            const event = await createEvent()
+            const eventRoom = await createEventRoom(event.id)
+            const activity = await createActivity(eventRoom.id)
+            const response = await server.get("/activities/activities").set('Authorization', `Bearer ${token}`)
+            expect(response.status).toBe(httpStatus.OK)
+            expect(response.body).toEqual([])
+        })
+        it("should return status 200 and user's activities", async () => {
+            const user = await createUser()
+            const token = await generateValidToken(user)
+            const event = await createEvent()
+            const eventRoom = await createEventRoom(event.id)
+            const activity = await createActivity(eventRoom.id)
+            await connectUserToActivity(activity.id, user.id)
+            const response = await server.get("/activities/activities").set('Authorization', `Bearer ${token}`)
+            expect(response.status).toBe(httpStatus.OK)
+            expect(response.body).toEqual(expect.arrayContaining([
+                expect.objectContaining({
+                    id: expect.any(Number),
+                    name: expect.any(String),
+                    startsAt: expect.any(String),
+                    endsAt: expect.any(String),
+                    eventRoomId: expect.any(Number),
+                    capacity: expect.any(Number),
+                    createdAt: expect.any(String),
+                    updatedAt: expect.any(String),
+                })
+            ]))
         })
     })
 })

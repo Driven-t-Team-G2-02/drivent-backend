@@ -26,6 +26,7 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await redis.flushAll();
+  await cleanDb();
 });
 
 const server = supertest(app);

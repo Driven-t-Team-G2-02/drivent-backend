@@ -28,6 +28,7 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await redis.flushAll();
+  await cleanDb();
 });
 
 const server = supertest(app);
@@ -95,6 +96,13 @@ describe('GET /booking', () => {
       expect(response.body).toEqual({
         id: booking.id,
         Room: {
+          Hotel: {
+            id: expect.any(Number),
+            name: expect.any(String),
+            image: expect.any(String),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+          },
           id: expect.any(Number),
           name: expect.any(String),
           capacity: expect.any(Number),

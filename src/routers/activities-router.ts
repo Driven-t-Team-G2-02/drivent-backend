@@ -4,6 +4,10 @@ import { getActivities, signUpUserToActivity, getActivitiesByUser } from '@/cont
 
 const activitiesRouter = Router();
 
-activitiesRouter.all('/*', authenticateToken).get('/', getActivities).get('/activities', getActivitiesByUser).post('/', signUpUserToActivity);
+activitiesRouter
+    .all('/*', authenticateToken)
+    .get('/', getActivities)
+    .get('/activities', getActivitiesByUser)
+    .post('/', signUpUserToActivity);
 
 export { activitiesRouter };
