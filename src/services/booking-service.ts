@@ -56,7 +56,7 @@ async function changeBookingRoomById(userId: number, roomId: number) {
 
   if (!booking || booking.userId !== userId) throw cannotBookError();
 
-  // TODO: reset Redis cache keys hotels and hotel that includes the room
+  await redisUtils.resetHotels(booking.Room.Hotel.id);
 
   return bookingRepository.upsertBooking({
     id: booking.id,
