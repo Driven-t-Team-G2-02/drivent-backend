@@ -18,6 +18,7 @@ beforeAll(async () => {
 
 
 afterAll(async () => {
+  await cleanDb();
   await redis.flushAll();
 });
 
