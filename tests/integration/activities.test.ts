@@ -15,7 +15,7 @@ beforeAll(async () => {
     await init();
 });
 
-beforeEach(async () => {
+afterEach(async () => {
     await cleanDb();
     await redis.flushAll();
 });
