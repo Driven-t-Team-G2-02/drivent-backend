@@ -70,6 +70,8 @@ async function signInGithub(code: string): Promise<SignInResult> {
     },
   });
 
+  if (!userResponse.data.email || userResponse.data.email === '') throw invalidCredentialsError();
+
   const user = await findOrCreateUser(userResponse.data.email);
   const token = await createSession(user.id);
 
