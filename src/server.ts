@@ -1,4 +1,7 @@
+import dns from 'dns';
 import app, { init } from '@/app';
+
+dns.setDefaultResultOrder('ipv4first');
 
 const port = +process.env.PORT || 4000;
 
