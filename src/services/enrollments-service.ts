@@ -54,7 +54,8 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
   enrollment.birthday = new Date(enrollment.birthday);
   const address = getAddressForUpsert(params.address);
 
-  await getAddressFromCEP(address.cep);
+  // ViaCEP bloqueia o IP de saída do Render (EHOSTUNREACH). O front já valida o CEP via ViaCEP direto do browser.
+  // await getAddressFromCEP(address.cep);
 
   await prisma.$transaction(async (tx) => {
     const newEnrollment = await enrollmentRepository.upsert(
