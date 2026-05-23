@@ -6,8 +6,11 @@ async function get(url: string) {
     const result = await axios.get(url);
     return result;
   } catch (error) {
-    const { status, statusText } = error.response;
-    throw requestError(status, statusText);
+    if (error.response) {
+      const { status, statusText } = error.response;
+      throw requestError(status, statusText);
+    }
+    throw requestError(503, error.message ?? 'External service unavailable');
   }
 }
 

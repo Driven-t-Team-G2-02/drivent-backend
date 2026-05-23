@@ -9,6 +9,11 @@ const redis = createClient({
   url: process.env.REDIS_URL,
 });
 
+redis.on('error', (err) => {
+  // eslint-disable-next-line no-console
+  console.error('Redis Client Error:', err);
+});
+
 export async function connectRedis() {
   return await redis.connect();
 }
