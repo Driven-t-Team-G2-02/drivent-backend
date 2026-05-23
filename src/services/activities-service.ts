@@ -1,5 +1,4 @@
 import { TicketStatus } from '@prisma/client';
-import dayjs from 'dayjs';
 import { activitiesRepository, enrollmentRepository, ticketsRepository } from '@/repositories';
 import { cannotActivityError, notFoundError } from '@/errors';
 
@@ -38,9 +37,7 @@ async function getActivities(userId: number) {
 }
 
 async function getActivitiesByUser(userId: number) {
-
   return await activitiesRepository.findActivitiesByUserId(userId);
-
 }
 
 async function signUpUserToActivity(userId: number, activityId: number) {
@@ -53,5 +50,5 @@ async function signUpUserToActivity(userId: number, activityId: number) {
 export const activitiesService = {
   getActivities,
   signUpUserToActivity,
-  getActivitiesByUser
+  getActivitiesByUser,
 };

@@ -11,7 +11,7 @@ async function findByRoomId(roomId: number | number[]) {
   return prisma.booking.findMany({
     where: {
       roomId: {
-        in: roomId,
+        in: Array.isArray(roomId) ? roomId : [roomId],
       },
     },
   });
@@ -22,10 +22,9 @@ async function findByUserId(userId: number) {
     where: { userId },
     include: {
       Room: {
-        include: { Hotel: true }
-      }
+        include: { Hotel: true },
+      },
     },
-
   });
 }
 

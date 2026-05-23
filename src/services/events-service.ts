@@ -9,7 +9,7 @@ const CACHE_KEY = 'event';
 
 async function getFirstEvent(): Promise<GetFirstEventResult> {
   const cachedEvent = await redisUtils.getCacheKey(CACHE_KEY);
-  if(cachedEvent) return cachedEvent;
+  if (cachedEvent) return cachedEvent;
 
   const event = await eventRepository.findFirst();
   if (!event) throw notFoundError();
@@ -26,7 +26,7 @@ export type GetFirstEventResult = Omit<Event, 'createdAt' | 'updatedAt'>;
 async function isCurrentEventActive(): Promise<boolean> {
   const cachedEvent = await redisUtils.getCacheKey(CACHE_KEY);
 
-  const event = cachedEvent || await eventRepository.findFirst();
+  const event = cachedEvent || (await eventRepository.findFirst());
   if (!event) return false;
 
   const now = dayjs();

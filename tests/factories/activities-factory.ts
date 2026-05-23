@@ -1,30 +1,29 @@
-import { prisma } from "@/config";
-import faker from "@faker-js/faker";
-
+import { faker } from '@faker-js/faker';
+import { prisma } from '@/config';
 
 export function createActivity(eventRoomId: number, startsAt?: Date, endsAt?: Date) {
-    return prisma.activity.create({
-        data: {
-            name: faker.name.firstName(),
-            startsAt: startsAt || faker.date.future(),
-            endsAt: endsAt || faker.date.future(),
-            eventRoomId,
-            capacity: faker.datatype.number({ min: 10, max: 100 })
-        }
-    })
+  return prisma.activity.create({
+    data: {
+      name: faker.name.firstName(),
+      startsAt: startsAt || faker.date.future(),
+      endsAt: endsAt || faker.date.future(),
+      eventRoomId,
+      capacity: faker.datatype.number({ min: 10, max: 100 }),
+    },
+  });
 }
 
 export function connectUserToActivity(activityId: number, userId: number) {
-    return prisma.activity.update({
-        where: {
-            id: activityId
+  return prisma.activity.update({
+    where: {
+      id: activityId,
+    },
+    data: {
+      User: {
+        connect: {
+          id: userId,
         },
-        data: {
-            User: {
-                connect: {
-                    id: userId
-                }
-            }
-        }
-    })
+      },
+    },
+  });
 }

@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { createUser } from '../factories';
 import { cleanDb } from '../helpers';
 import { prisma } from '@/config';

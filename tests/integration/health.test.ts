@@ -1,15 +1,15 @@
 import httpStatus from 'http-status';
 import supertest from 'supertest';
-import app, { init } from '@/app';
 import { cleanDb } from '../helpers';
+import app, { init } from '@/app';
 
 beforeAll(async () => {
   await init();
 });
 
 afterAll(async () => {
-  await cleanDb()
-})
+  await cleanDb();
+});
 
 const server = supertest(app);
 

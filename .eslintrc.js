@@ -14,6 +14,10 @@ module.exports = {
     'import/order': 'warn',
     'import/no-named-as-default-member': 'off',
     '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+    ],
     'import/newline-after-import': ['error'],
     'lines-between-class-members': ['error', 'always'],
   },

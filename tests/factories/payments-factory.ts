@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { prisma } from '@/config';
 
 export async function createPayment(ticketId: number, value: number) {

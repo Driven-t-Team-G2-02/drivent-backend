@@ -1,15 +1,15 @@
-import { loadEnv } from "./envs";
-import { createClient } from "redis";
+import { createClient } from 'redis';
+import { loadEnv } from './envs';
 
 loadEnv();
 
 export const DEFAULT_EXP = 1800;
 
 const redis = createClient({
-  url: process.env.REDIS_URL
-})
+  url: process.env.REDIS_URL,
+});
 
-export async function connectRedis () {
+export async function connectRedis() {
   return await redis.connect();
 }
 

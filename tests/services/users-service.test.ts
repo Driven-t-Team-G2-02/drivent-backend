@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
 import { createUser as createUserSeed, createEvent as createEventSeed } from '../factories';
 import { cleanDb } from '../helpers';
